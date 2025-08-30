@@ -2,7 +2,7 @@
 
 /**
  * @fileOverview A profile improvement recommendation AI agent.
- *
+ * 
  * - getProfileImprovementRecommendation - A function that generates profile improvement recommendations.
  * - ProfileImprovementRecommendationInput - The input type for the getProfileImprovementRecommendation function.
  * - ProfileImprovementRecommendationOutput - The return type for the getProfileImprovementRecommendation function.
@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
   output: {schema: ProfileImprovementRecommendationOutputSchema},
   prompt: `You are a professional profile improvement assistant.
 
-  Based on the following user profile and network data, provide a brief recommendation for improving the user's profile.
+  Based on the following user profile and network data, provide a brief recommendation for improving the user's profile to attract more relevant connections and job opportunities.
 
   User Profile: {{{userProfile}}}
   Network Data: {{{networkData}}}
