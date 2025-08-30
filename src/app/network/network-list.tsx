@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -69,8 +70,8 @@ export function NetworkList() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {connections.map((person) => (
-        <Link href={`/network/${person.id}`} key={person.id}>
-          <Card className="hover:bg-accent hover:text-accent-foreground transition-colors">
+        <Link href={`/network/${person.id}`} key={person.id} className="hover:bg-accent hover:text-accent-foreground transition-colors rounded-lg">
+          <Card className="bg-transparent border-0 shadow-none">
             <CardHeader className="flex flex-row items-center gap-4">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={person.avatarUrl} alt={person.name} />
