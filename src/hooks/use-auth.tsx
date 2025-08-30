@@ -1,13 +1,45 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, signInWithCustomToken, type User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { app, db } from '@/lib/firebase';
+import type { User } from 'firebase/auth';
 import type { UserProfile } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
 
-const auth = getAuth(app);
+// Mock user data since auth is removed
+const mockUser: User = {
+  uid: 'mock-user-id',
+  email: 'test@example.com',
+  displayName: 'Test User',
+  photoURL: 'https://picsum.photos/100',
+  emailVerified: true,
+  isAnonymous: false,
+  metadata: {},
+  providerData: [],
+  refreshToken: '',
+  tenantId: null,
+  delete: async () => {},
+  getIdToken: async () => '',
+  getIdTokenResult: async () => ({
+    token: '',
+    expirationTime: '',
+    authTime: '',
+    issuedAtTime: '',
+    signInProvider: null,
+    signInSecondFactor: null,
+    claims: {},
+  }),
+  reload: async () => {},
+  toJSON: () => ({}),
+  providerId: '',
+};
+
+const mockUserProfile: UserProfile = {
+  id: 'mock-user-id',
+  name: 'Test User',
+  bio: 'A passionate developer.',
+  avatarUrl: 'https://picsum.photos/seed/test-user/100/100',
+  connections: ['user2', 'user3'], // Example connections
+};
+
 
 interface AuthContextType {
   user: User | null;
@@ -25,38 +57,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setUserProfile({ id: user.uid, ...userDoc.data() } as UserProfile);
-        }
-      } else {
-        setUser(null);
-        setUserProfile(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    // Simulate loading and then set mock user
+    setTimeout(() => {
+        setUser(mockUser);
+        setUserProfile(mockUserProfile);
+        setLoading(false);
+    }, 500)
   }, []);
 
   const signInWithToken = async (token: string) => {
-    await signInWithCustomToken(auth, token);
+    console.log("Signing in with token (mock)", token);
+    setLoading(true);
+    setTimeout(() => {
+        setUser(mockUser);
+        setUserProfile(mockUserProfile);
+        setLoading(false);
+    }, 500)
   };
 
   const signOut = async () => {
-    await auth.signOut();
+    console.log("Signing out (mock)");
+    setLoading(true);
+     setTimeout(() => {
+        setUser(null);
+        setUserProfile(null);
+        setLoading(false);
+    }, 500)
   };
-
-  if (loading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
 
   return (
     <AuthContext.Provider value={{ user, userProfile, loading, signInWithToken, signOut }}>
