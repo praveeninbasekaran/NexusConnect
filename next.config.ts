@@ -24,25 +24,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Allow all origins in development
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/:path*',
-          has: [
-            {
-              type: 'host',
-              value: '(?<host>.*)',
-            },
-          ],
-          destination: '/:path*',
-        },
-      ],
-      afterFiles: [],
-      fallback: [],
-    };
-  },
   async headers() {
     return [
       {
