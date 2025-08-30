@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useState, type ReactNode } from 'react';
@@ -11,8 +12,8 @@ interface RoleContextType {
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
-export function RoleProvider({ children, role: initialRole }: { children: ReactNode, role?: Role }) {
-  const [role, setRole] = useState<Role>(initialRole || null);
+export function RoleProvider({ children }: { children: ReactNode }) {
+  const [role, setRole] = useState<Role>(null);
 
   return (
     <RoleContext.Provider value={{ role, setRole }}>

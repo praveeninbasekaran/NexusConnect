@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -9,32 +10,38 @@ import { RoleProvider, useRole } from '@/hooks/use-role';
 
 function RoleSelectionPage({ onSelectRole }: { onSelectRole: (role: 'job-seeker' | 'employer') => void }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-800">Welcome to NexusConnect</h1>
+        <h1 className="text-5xl font-bold text-foreground">Welcome to NexusConnect</h1>
         <p className="text-xl text-muted-foreground mt-4">Your professional network, redefined.</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-        <Card className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+        <Card 
+          onClick={() => onSelectRole('job-seeker')}
+          className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
+        >
           <CardHeader className="items-center text-center">
             <Briefcase className="h-12 w-12 text-primary mb-4" />
             <CardTitle className="text-2xl">Job Seeker</CardTitle>
             <CardDescription className="text-base">Discover opportunities from your professional network.</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Button size="lg" onClick={() => onSelectRole('job-seeker')}>
+            <Button size="lg">
               Find a Job <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </CardContent>
         </Card>
-        <Card className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+        <Card 
+          onClick={() => onSelectRole('employer')}
+          className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
+        >
           <CardHeader className="items-center text-center">
             <Users className="h-12 w-12 text-accent mb-4" />
             <CardTitle className="text-2xl">Employer</CardTitle>
             <CardDescription className="text-base">Disseminate job opportunities to your professional network.</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Button size="lg" variant="secondary" onClick={() => onSelectRole('employer')}>
+            <Button size="lg" variant="secondary">
               Post a Job <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </CardContent>
@@ -45,19 +52,17 @@ function RoleSelectionPage({ onSelectRole }: { onSelectRole: (role: 'job-seeker'
 }
 
 function HomePageContent() {
-  const [selectedRole, setSelectedRole] = useState<'job-seeker' | 'employer' | null>(null);
+  const { role, setRole } = useRole();
   
-  if (!selectedRole) {
-    return <RoleSelectionPage onSelectRole={setSelectedRole} />;
+  if (!role) {
+    return <RoleSelectionPage onSelectRole={setRole} />;
   }
 
   return (
-    <RoleProvider role={selectedRole}>
       <AppLayout>
-        {selectedRole === 'job-seeker' && <DashboardPage />}
-        {selectedRole === 'employer' && <PostJobPage />}
+        {role === 'job-seeker' && <DashboardPage />}
+        {role === 'employer' && <PostJobPage />}
       </AppLayout>
-    </RoleProvider>
   );
 }
 
@@ -67,5 +72,9 @@ import DashboardPage from './dashboard/page';
 import PostJobPage from './post-job/page';
 
 export default function HomePage() {
-    return <HomePageContent />;
+    return (
+      <RoleProvider>
+        <HomePageContent />
+      </RoleProvider>
+    );
 }

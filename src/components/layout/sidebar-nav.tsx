@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -26,7 +27,6 @@ import {
 
 export function SidebarNav({ onSignOut }: { onSignOut: () => void }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { userProfile } = useAuth();
   const { role, setRole } = useRole();
 
@@ -34,6 +34,10 @@ export function SidebarNav({ onSignOut }: { onSignOut: () => void }) {
     // We call the passed onSignOut function which will reset the role
     onSignOut();
   };
+  
+  const handleHomeClick = () => {
+    setRole(null);
+  }
 
   const allMenuItems = [
     { href: '/dashboard', label: 'Job Feed', icon: LayoutDashboard, roles: ['job-seeker'] },
@@ -52,7 +56,7 @@ export function SidebarNav({ onSignOut }: { onSignOut: () => void }) {
                 <Briefcase className="h-8 w-8 text-primary" />
                 <div className="font-bold text-xl">NexusConnect</div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setRole(null)} aria-label="Go Home">
+            <Button variant="ghost" size="icon" onClick={handleHomeClick} aria-label="Go Home">
                 <Home className="h-5 w-5" />
             </Button>
         </div>
@@ -63,7 +67,7 @@ export function SidebarNav({ onSignOut }: { onSignOut: () => void }) {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith(item.href)}
+                isActive={pathname === item.href}
                 tooltip={item.label}
                 variant="default"
               >

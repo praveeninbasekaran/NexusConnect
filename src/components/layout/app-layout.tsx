@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -9,7 +10,7 @@ import { useRole } from '@/hooks/use-role';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { loading } = useAuth();
-  const { role, setRole } = useRole();
+  const { setRole } = useRole();
   const router = useRouter();
 
   if (loading) {
