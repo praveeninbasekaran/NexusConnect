@@ -1,10 +1,8 @@
-import { AppLayout } from '@/components/layout/app-layout';
 import { PostJobForm } from './post-job-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function PostJobPage() {
   return (
-    <AppLayout>
       <main className="p-4 md:p-8 flex justify-center items-start">
         <Card className="w-full max-w-2xl shadow-lg">
            <CardHeader>
@@ -16,6 +14,5 @@ export default function PostJobPage() {
           </CardContent>
         </Card>
       </main>
-    </AppLayout>
   );
 }

@@ -1,9 +1,9 @@
-
 'use client';
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
+import { useRole } from '@/hooks/use-role';
 import {
   SidebarHeader,
   SidebarContent,
@@ -21,31 +21,40 @@ import {
   PlusCircle,
   LogOut,
   Briefcase,
+  Home,
 } from 'lucide-react';
 
-export function SidebarNav() {
+export function SidebarNav({ onSignOut }: { onSignOut: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { userProfile, signOut } = useAuth();
+  const { userProfile } = useAuth();
+  const { role, setRole } = useRole();
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
+    // We call the passed onSignOut function which will reset the role
+    onSignOut();
   };
 
-  const menuItems = [
-    { href: '/dashboard', label: 'Job Feed', icon: LayoutDashboard },
-    { href: '/network', label: 'My Network', icon: Users },
-    { href: '/messages', label: 'Messages', icon: MessageSquare },
-    { href: '/post-job', label: 'Post a Job', icon: PlusCircle },
+  const allMenuItems = [
+    { href: '/dashboard', label: 'Job Feed', icon: LayoutDashboard, roles: ['job-seeker'] },
+    { href: '/network', label: 'My Network', icon: Users, roles: ['job-seeker', 'employer'] },
+    { href: '/messages', label: 'Messages', icon: MessageSquare, roles: ['job-seeker'] },
+    { href: '/post-job', label: 'Post a Job', icon: PlusCircle, roles: ['employer'] },
   ];
+  
+  const menuItems = allMenuItems.filter(item => item.roles.includes(role || ''));
 
   return (
     <>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <Briefcase className="h-8 w-8 text-primary" />
-          <div className="font-bold text-xl">NexusConnect</div>
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                <Briefcase className="h-8 w-8 text-primary" />
+                <div className="font-bold text-xl">NexusConnect</div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setRole(null)} aria-label="Go Home">
+                <Home className="h-5 w-5" />
+            </Button>
         </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
@@ -54,7 +63,7 @@ export function SidebarNav() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href)}
                 tooltip={item.label}
                 variant="default"
               >

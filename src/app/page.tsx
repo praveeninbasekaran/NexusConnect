@@ -1,23 +1,71 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/use-auth';
-import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { AppLayout } from '@/components/layout/app-layout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Briefcase, Users, ArrowRight } from 'lucide-react';
+import { RoleProvider, useRole } from '@/hooks/use-role';
 
-export default function HomePage() {
-  const { loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      router.push('/dashboard');
-    }
-  }, [loading, router]);
-
+function RoleSelectionPage({ onSelectRole }: { onSelectRole: (role: 'job-seeker' | 'employer') => void }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-       <Loader2 className="h-8 w-8 animate-spin" />
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
+      <div className="text-center mb-12">
+        <h1 className="text-5xl font-bold text-gray-800">Welcome to NexusConnect</h1>
+        <p className="text-xl text-muted-foreground mt-4">Your professional network, redefined.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+        <Card className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          <CardHeader className="items-center text-center">
+            <Briefcase className="h-12 w-12 text-primary mb-4" />
+            <CardTitle className="text-2xl">Job Seeker</CardTitle>
+            <CardDescription className="text-base">Discover opportunities from your professional network.</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button size="lg" onClick={() => onSelectRole('job-seeker')}>
+              Find a Job <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </CardContent>
+        </Card>
+        <Card className="shadow-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+          <CardHeader className="items-center text-center">
+            <Users className="h-12 w-12 text-accent mb-4" />
+            <CardTitle className="text-2xl">Employer</CardTitle>
+            <CardDescription className="text-base">Disseminate job opportunities to your professional network.</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button size="lg" variant="secondary" onClick={() => onSelectRole('employer')}>
+              Post a Job <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </main>
   );
+}
+
+function HomePageContent() {
+  const [selectedRole, setSelectedRole] = useState<'job-seeker' | 'employer' | null>(null);
+  
+  if (!selectedRole) {
+    return <RoleSelectionPage onSelectRole={setSelectedRole} />;
+  }
+
+  return (
+    <RoleProvider role={selectedRole}>
+      <AppLayout>
+        {selectedRole === 'job-seeker' && <DashboardPage />}
+        {selectedRole === 'employer' && <PostJobPage />}
+      </AppLayout>
+    </RoleProvider>
+  );
+}
+
+// These are placeholders for the actual pages to avoid prop-drilling issues
+// and to decide which page to show based on the role.
+import DashboardPage from './dashboard/page';
+import PostJobPage from './post-job/page';
+
+export default function HomePage() {
+    return <HomePageContent />;
 }
